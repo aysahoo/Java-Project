@@ -1,0 +1,86 @@
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                    ASSIGNMENT PORTAL - QUICK REFERENCE                        ║
+║                          ✅ FULLY OPERATIONAL                                 ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+📍 APPLICATION URL
+   http://localhost:8080/assignment-portal/
+
+🔐 LOGIN CREDENTIALS
+   ┌────────────┬──────────────┬──────────────┬──────────────────────────────────┐
+   │ Role       │ Username     │ Password     │ Dashboard                        │
+   ├────────────┼──────────────┼──────────────┼──────────────────────────────────┤
+   │ Admin      │ admin        │ admin123     │ /admin/dashboard                 │
+   │ Teacher    │ john.smith   │ teacher123   │ /teacher/dashboard               │
+   │ Student    │ alice.brown  │ student123   │ /student/dashboard               │
+   └────────────┴──────────────┴──────────────┴──────────────────────────────────┘
+
+🚀 QUICK START
+   1. Open browser: http://localhost:8080/assignment-portal/
+   2. Login with any credentials above
+   3. Explore your role-specific dashboard
+
+🔧 TOMCAT COMMANDS
+   Start:    /opt/homebrew/opt/tomcat@9/libexec/bin/startup.sh
+   Stop:     /opt/homebrew/opt/tomcat@9/libexec/bin/shutdown.sh
+   Restart:  /opt/homebrew/opt/tomcat@9/libexec/bin/shutdown.sh && \
+             sleep 2 && /opt/homebrew/opt/tomcat@9/libexec/bin/startup.sh
+
+📊 LOGS
+   Real-time:  tail -f /opt/homebrew/opt/tomcat@9/libexec/logs/catalina.out
+   Errors:     tail -50 /opt/homebrew/opt/tomcat@9/libexec/logs/localhost.$(date +%Y-%m-%d).log
+   Pool Init:  grep "connection pool" /opt/homebrew/opt/tomcat@9/libexec/logs/catalina.out
+
+🗄️ DATABASE
+   Provider:  Neon PostgreSQL (Serverless)
+   Database:  neondb
+   Host:      ep-floral-bush-a1ft2sv2-pooler.ap-southeast-1.aws.neon.tech
+   SSL:       Required
+   Pool:      5 connections
+
+📁 PROJECT LOCATION
+   /Users/ayushranjansahoo/Documents/Desktop/java-awt/assignment-portal/
+
+📚 DOCUMENTATION
+   README.md         - Complete documentation (900+ lines)
+   TESTING-GUIDE.md  - Testing procedures
+   STATUS.md         - Current deployment status
+
+⚡ FEATURES WORKING
+   ✅ Login authentication
+   ✅ Role-based access control
+   ✅ Session management
+   ✅ Dashboard UIs (all 3 roles)
+   ✅ PostgreSQL connection pool
+   ✅ Logout functionality
+
+⚠️ KNOWN ISSUES
+   • Dashboards show static data (DB queries need implementation)
+   • First login after inactivity may fail (Neon wake-up time)
+   • Button actions not yet implemented (architecture ready)
+
+🎯 TO MAKE BUTTONS WORK
+   Need to implement:
+   1. Fetch real data in servlet doGet() methods
+   2. Add doPost() handlers for:
+      - Submit assignment (SubmitAssignmentServlet)
+      - Grade submission (GradeSubmissionServlet)
+      - Create user/course (Admin servlets)
+   3. File upload for assignment submissions
+
+✅ VERIFICATION
+   Test login flow:
+   curl -c cookies.txt -X POST http://localhost:8080/assignment-portal/login \
+        -d "username=admin&password=admin123"
+
+   Access dashboard:
+   curl -b cookies.txt http://localhost:8080/assignment-portal/admin/dashboard
+
+💡 PRO TIP
+   If you see "Database error: An I/O error", wait 2 seconds and retry.
+   This is normal - Neon suspends the database after 5 min of inactivity.
+
+═══════════════════════════════════════════════════════════════════════════════
+Last Updated: November 17, 2025
+Status: ✅ OPERATIONAL | Connection Pool: ✅ ACTIVE | Database: ✅ CONNECTED
+═══════════════════════════════════════════════════════════════════════════════
