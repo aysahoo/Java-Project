@@ -1,7 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="com.assignmentportal.model.User" %>
 <%@ page import="com.assignmentportal.model.Submission" %>
+<%@ page import="com.assignmentportal.model.Assignment" %>
+<%@ page import="com.assignmentportal.model.Course" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.text.SimpleDateFormat" %>
 <%
     User user = (User) session.getAttribute("user");
     if (user == null || !"TEACHER".equals(user.getRole())) {
@@ -10,7 +13,13 @@
     }
     
     List<Submission> submissions = (List<Submission>) request.getAttribute("submissions");
+    List<Assignment> assignments = (List<Assignment>) request.getAttribute("assignments");
+    List<Course> courses = (List<Course>) request.getAttribute("courses");
+    
     int submissionCount = (submissions != null) ? submissions.size() : 0;
+    int assignmentCount = (assignments != null) ? assignments.size() : 0;
+    int courseCount = (courses != null) ? courses.size() : 0;
+    
     int pendingCount = 0;
     if (submissions != null) {
         for (Submission sub : submissions) {
@@ -19,6 +28,8 @@
             }
         }
     }
+    
+    SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy 'at' hh:mm a");
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -188,6 +199,97 @@
             color: #721c24;
             border-left: 4px solid #dc3545;
         }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 3% auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 700px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .modal-header {
+            margin-bottom: 20px;
+            border-bottom: 2px solid #11998e;
+            padding-bottom: 15px;
+        }
+        .modal-header h2 {
+            color: #11998e;
+            margin: 0;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover,
+        .close:focus {
+            color: #000;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #11998e;
+        }
+        .btn-primary {
+            background: #11998e;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            background: #0e7d72;
+        }
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
     </style>
 </head>
 <body>
@@ -220,12 +322,12 @@
         <div class="dashboard-grid">
             <div class="card">
                 <h2>My Courses</h2>
-                <div class="stat">2</div>
+                <div class="stat"><%= courseCount %></div>
                 <p>Active courses</p>
             </div>
             <div class="card">
                 <h2>Assignments</h2>
-                <div class="stat">3</div>
+                <div class="stat"><%= assignmentCount %></div>
                 <p>Total assignments</p>
             </div>
             <div class="card">
@@ -280,58 +382,62 @@
 
         <div class="section">
             <h2>📚 My Courses</h2>
+            <% if (courses != null && !courses.isEmpty()) { %>
             <ul class="course-list">
+                <% for (Course course : courses) { 
+                    int courseAssignmentCount = 0;
+                    if (assignments != null) {
+                        for (Assignment a : assignments) {
+                            if (a.getCourseId() == course.getCourseId()) {
+                                courseAssignmentCount++;
+                            }
+                        }
+                    }
+                %>
                 <li class="list-item">
                     <div class="item-title">
-                        CS101 - Introduction to Programming
+                        <%= course.getCourseCode() %> - <%= course.getCourseName() %>
                         <span class="badge badge-active">Active</span>
                     </div>
-                    <div class="item-meta">2 assignments created</div>
-                    <div class="item-meta">1 student enrolled</div>
-                    <a href="#" class="action-btn">View Course</a>
-                    <a href="#" class="action-btn create">Create Assignment</a>
+                    <div class="item-meta"><%= courseAssignmentCount %> assignment<%= courseAssignmentCount != 1 ? "s" : "" %> created</div>
+                    <div class="item-meta"><%= course.getDescription() != null ? course.getDescription() : "No description" %></div>
+                    <button class="action-btn" onclick="viewCourse('<%= course.getCourseCode() %>')">View Course</button>
+                    <button class="action-btn create" onclick="createAssignment('<%= course.getCourseCode() %>')">Create Assignment</button>
                 </li>
-                <li class="list-item">
-                    <div class="item-title">
-                        CS201 - Data Structures and Algorithms
-                        <span class="badge badge-active">Active</span>
-                    </div>
-                    <div class="item-meta">1 assignment created</div>
-                    <div class="item-meta">1 student enrolled</div>
-                    <a href="#" class="action-btn">View Course</a>
-                    <a href="#" class="action-btn create">Create Assignment</a>
-                </li>
+                <% } %>
             </ul>
+            <% } else { %>
+            <p style="text-align:center; padding:40px; color:#7f8c8d;">No courses assigned to you yet.</p>
+            <% } %>
         </div>
 
         <div class="section">
             <h2>Recent Assignments</h2>
+            <% if (assignments != null && !assignments.isEmpty()) { %>
             <ul class="assignment-list">
+                <% for (Assignment assignment : assignments) {
+                    int submCount = 0;
+                    if (submissions != null) {
+                        for (Submission s : submissions) {
+                            if (s.getAssignmentId() == assignment.getAssignmentId()) {
+                                submCount++;
+                            }
+                        }
+                    }
+                %>
                 <li class="list-item">
-                    <div class="item-title">Assignment 1: Hello World</div>
-                    <div class="item-meta">Course: CS101 - Introduction to Programming</div>
-                    <div class="item-meta">📅 Due: November 30, 2025 at 11:59 PM</div>
-                    <div class="item-meta">📊 Max Marks: 100 | 📥 Submissions: 0</div>
-                    <a href="#" class="action-btn">View Submissions</a>
-                    <a href="#" class="action-btn">Edit Assignment</a>
+                    <div class="item-title"><%= assignment.getTitle() %></div>
+                    <div class="item-meta">Course: <%= assignment.getCourseCode() %> - <%= assignment.getCourseName() %></div>
+                    <div class="item-meta">📅 Due: <%= sdf.format(assignment.getDueDate()) %></div>
+                    <div class="item-meta">📊 Max Marks: <%= assignment.getMaxMarks() %> | 📥 Submissions: <%= submCount %></div>
+                    <button class="action-btn" onclick="viewSubmissions(<%= assignment.getAssignmentId() %>)">View Submissions</button>
+                    <button class="action-btn" onclick="editAssignment(<%= assignment.getAssignmentId() %>, '<%= assignment.getCourseCode() %>')">Edit Assignment</button>
                 </li>
-                <li class="list-item">
-                    <div class="item-title">Assignment 2: Calculator</div>
-                    <div class="item-meta">Course: CS101 - Introduction to Programming</div>
-                    <div class="item-meta">📅 Due: December 15, 2025 at 11:59 PM</div>
-                    <div class="item-meta">📊 Max Marks: 100 | 📥 Submissions: 0</div>
-                    <a href="#" class="action-btn">View Submissions</a>
-                    <a href="#" class="action-btn">Edit Assignment</a>
-                </li>
-                <li class="list-item">
-                    <div class="item-title">Assignment 1: Linked Lists</div>
-                    <div class="item-meta">Course: CS201 - Data Structures and Algorithms</div>
-                    <div class="item-meta">📅 Due: December 1, 2025 at 11:59 PM</div>
-                    <div class="item-meta">📊 Max Marks: 100 | 📥 Submissions: 0</div>
-                    <a href="#" class="action-btn">View Submissions</a>
-                    <a href="#" class="action-btn">Edit Assignment</a>
-                </li>
+                <% } %>
             </ul>
+            <% } else { %>
+            <p style="text-align:center; padding:40px; color:#7f8c8d;">No assignments created yet. Create an assignment to get started!</p>
+            <% } %>
         </div>
 
         <!-- Grade Submission Modal -->
@@ -366,7 +472,47 @@
             </div>
         </div>
 
+        <!-- Create Assignment Modal -->
+        <div id="assignmentModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close" onclick="closeAssignmentModal()">&times;</span>
+                    <h2 id="assignmentModalTitle">Create Assignment</h2>
+                </div>
+                <form id="assignmentForm" action="<%= request.getContextPath() %>/teacher/create-assignment" method="post">
+                    <input type="hidden" id="assignmentId" name="assignmentId">
+                    <input type="hidden" id="assignmentCourse" name="courseCode">
+                    
+                    <div class="form-group">
+                        <label for="assignmentTitle">Assignment Title *</label>
+                        <input type="text" id="assignmentTitle" name="title" required placeholder="e.g., Assignment 1: Variables and Data Types">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="assignmentDescription">Description *</label>
+                        <textarea id="assignmentDescription" name="description" rows="5" required placeholder="Enter assignment description, requirements, and instructions..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dueDate">Due Date *</label>
+                        <input type="datetime-local" id="dueDate" name="dueDate" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="maxMarks">Maximum Marks *</label>
+                        <input type="number" id="maxMarks" name="maxMarks" min="1" max="1000" value="100" required>
+                    </div>
+                    
+                    <div>
+                        <button type="submit" class="btn-primary">Create Assignment</button>
+                        <button type="button" class="btn-secondary" onclick="closeAssignmentModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <script>
+            // Grade Modal Functions
             function openGradeModal(submissionId, assignmentTitle, studentName, maxMarks) {
                 document.getElementById('submissionId').value = submissionId;
                 document.getElementById('gradeTitle').textContent = assignmentTitle + ' - ' + studentName;
@@ -379,10 +525,47 @@
                 document.getElementById('gradeModal').style.display = 'none';
             }
             
+            // Assignment Modal Functions
+            function createAssignment(courseCode) {
+                document.getElementById('assignmentModalTitle').textContent = 'Create Assignment for ' + courseCode;
+                document.getElementById('assignmentForm').reset();
+                document.getElementById('assignmentId').value = '';
+                document.getElementById('assignmentCourse').value = courseCode;
+                document.getElementById('assignmentModal').style.display = 'block';
+            }
+            
+            function editAssignment(assignmentId, courseCode) {
+                document.getElementById('assignmentModalTitle').textContent = 'Edit Assignment';
+                document.getElementById('assignmentId').value = assignmentId;
+                document.getElementById('assignmentCourse').value = courseCode;
+                // TODO: Load existing assignment data
+                document.getElementById('assignmentModal').style.display = 'block';
+            }
+            
+            function closeAssignmentModal() {
+                document.getElementById('assignmentModal').style.display = 'none';
+            }
+            
+            function viewCourse(courseCode) {
+                // TODO: Implement course details view
+                alert('Course details view will be implemented.\n\nCourse Code: ' + courseCode);
+            }
+            
+            function viewSubmissions(assignmentId) {
+                // TODO: Implement submissions view
+                alert('Submissions view will be implemented.\n\nAssignment ID: ' + assignmentId);
+            }
+            
+            // Close modals when clicking outside
             window.onclick = function(event) {
-                const modal = document.getElementById('gradeModal');
-                if (event.target == modal) {
+                const gradeModal = document.getElementById('gradeModal');
+                const assignmentModal = document.getElementById('assignmentModal');
+                
+                if (event.target == gradeModal) {
                     closeGradeModal();
+                }
+                if (event.target == assignmentModal) {
+                    closeAssignmentModal();
                 }
             }
         </script>

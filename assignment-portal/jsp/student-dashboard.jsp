@@ -1,8 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="com.assignmentportal.model.User" %>
 <%@ page import="com.assignmentportal.model.Submission" %>
+<%@ page import="com.assignmentportal.model.Assignment" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.HashMap" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="java.text.SimpleDateFormat" %>
 <%
     User user = (User) session.getAttribute("user");
     if (user == null || !"STUDENT".equals(user.getRole())) {
@@ -13,6 +17,25 @@
     List<Submission> submissions = (List<Submission>) request.getAttribute("submissions");
     if (submissions == null) {
         submissions = new ArrayList<>();
+    }
+    
+    List<Assignment> assignments = (List<Assignment>) request.getAttribute("assignments");
+    if (assignments == null) {
+        assignments = new ArrayList<>();
+    }
+    
+    // Create a map of submitted assignment IDs for quick lookup
+    Map<Integer, Submission> submittedAssignments = new HashMap<>();
+    for (Submission sub : submissions) {
+        submittedAssignments.put(sub.getAssignmentId(), sub);
+    }
+    
+    // Count pending assignments (not submitted)
+    int pendingCount = 0;
+    for (Assignment assignment : assignments) {
+        if (!submittedAssignments.containsKey(assignment.getAssignmentId())) {
+            pendingCount++;
+        }
     }
     
     // Count submitted assignments
@@ -28,6 +51,8 @@
         }
     }
     double avgGrade = gradedCount > 0 ? totalMarks / gradedCount : 0;
+    
+    SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy 'at' hh:mm a");
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -343,7 +368,7 @@
             </div>
             <div class="card">
                 <h2>Assignments</h2>
-                <div class="stat">3</div>
+                <div class="stat"><%= assignments.size() %></div>
                 <p>Total assignments</p>
             </div>
             <div class="card">
@@ -352,9 +377,9 @@
                 <p>Submitted assignments</p>
             </div>
             <div class="card">
-                <h2>Average Grade</h2>
-                <div class="stat"><%= gradedCount > 0 ? String.format("%.1f", avgGrade) : "--" %></div>
-                <p><%= gradedCount > 0 ? gradedCount + " graded" : "Not graded yet" %></p>
+                <h2>Pending</h2>
+                <div class="stat"><%= pendingCount %></div>
+                <p>Not submitted yet</p>
             </div>
         </div>
 
@@ -428,39 +453,44 @@
         <% } %>
         
         <div class="section">
-            <h2>Pending Assignments</h2>
+            <h2>📋 Pending Assignments (<%= pendingCount %>)</h2>
+            <% if (pendingCount > 0) { %>
             <ul class="assignment-list">
+                <% 
+                for (Assignment assignment : assignments) {
+                    // Only show if not submitted
+                    if (!submittedAssignments.containsKey(assignment.getAssignmentId())) {
+                        // Check if overdue
+                        boolean isOverdue = assignment.getDueDate() != null && 
+                                          new java.util.Date().after(assignment.getDueDate());
+                %>
                 <li class="assignment-item">
                     <div class="assignment-title">
-                        Assignment 1: Hello World
-                        <span class="badge badge-pending">Pending</span>
+                        <%= assignment.getTitle() %>
+                        <% if (isOverdue) { %>
+                            <span class="badge badge-pending" style="background:#e74c3c;">Overdue</span>
+                        <% } else { %>
+                            <span class="badge badge-pending">Pending</span>
+                        <% } %>
                     </div>
-                    <div class="assignment-meta">Course: CS101 - Introduction to Programming</div>
-                    <div class="assignment-meta">Due: November 30, 2025 at 11:59 PM</div>
-                    <div class="assignment-meta">Max Marks: 100</div>
-                    <button onclick="openSubmitModal(1, 'Assignment 1: Hello World')" class="submit-btn">Submit Assignment</button>
+                    <div class="assignment-meta">Course: <%= assignment.getCourseCode() %> - <%= assignment.getCourseName() %></div>
+                    <div class="assignment-meta">📅 Due: <%= sdf.format(assignment.getDueDate()) %></div>
+                    <div class="assignment-meta">📊 Max Marks: <%= assignment.getMaxMarks() %></div>
+                    <% if (assignment.getDescription() != null && !assignment.getDescription().isEmpty()) { %>
+                        <div class="assignment-meta" style="margin-top:5px; color:#555;">
+                            📝 <%= assignment.getDescription().length() > 150 ? assignment.getDescription().substring(0, 150) + "..." : assignment.getDescription() %>
+                        </div>
+                    <% } %>
+                    <button onclick="openSubmitModal(<%= assignment.getAssignmentId() %>, '<%= assignment.getTitle().replace("'", "\\'") %>')" class="submit-btn">Submit Assignment</button>
                 </li>
-                <li class="assignment-item">
-                    <div class="assignment-title">
-                        Assignment 2: Calculator
-                        <span class="badge badge-pending">Pending</span>
-                    </div>
-                    <div class="assignment-meta">Course: CS101 - Introduction to Programming</div>
-                    <div class="assignment-meta">Due: December 15, 2025 at 11:59 PM</div>
-                    <div class="assignment-meta">Max Marks: 100</div>
-                    <button onclick="openSubmitModal(2, 'Assignment 2: Calculator')" class="submit-btn">Submit Assignment</button>
-                </li>
-                <li class="assignment-item">
-                    <div class="assignment-title">
-                        Assignment 1: Linked Lists
-                        <span class="badge badge-pending">Pending</span>
-                    </div>
-                    <div class="assignment-meta">Course: CS201 - Data Structures and Algorithms</div>
-                    <div class="assignment-meta">Due: December 1, 2025 at 11:59 PM</div>
-                    <div class="assignment-meta">Max Marks: 100</div>
-                    <button onclick="openSubmitModal(3, 'Assignment 1: Linked Lists')" class="submit-btn">Submit Assignment</button>
-                </li>
+                <% 
+                    }
+                } 
+                %>
             </ul>
+            <% } else { %>
+            <p style="text-align:center; padding:40px; color:#7f8c8d;">🎉 Great job! You have no pending assignments.</p>
+            <% } %>
         </div>
         
         <!-- Submit Assignment Modal -->

@@ -1,8 +1,10 @@
 package com.assignmentportal.servlet;
 
 import com.assignmentportal.dao.SubmissionDAO;
+import com.assignmentportal.dao.AssignmentDAO;
 import com.assignmentportal.model.User;
 import com.assignmentportal.model.Submission;
+import com.assignmentportal.model.Assignment;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -12,10 +14,12 @@ import java.util.List;
 
 public class StudentDashboardServlet extends HttpServlet {
     private SubmissionDAO submissionDAO;
+    private AssignmentDAO assignmentDAO;
     
     @Override
     public void init() throws ServletException {
         submissionDAO = new SubmissionDAO();
+        assignmentDAO = new AssignmentDAO();
     }
     
     @Override
@@ -44,15 +48,21 @@ public class StudentDashboardServlet extends HttpServlet {
             return;
         }
         
-        // Fetch student's submissions
         try {
             int studentId = user.getUserId();
+            
+            // Fetch student's assignments (from enrolled courses)
+            List<Assignment> assignments = assignmentDAO.getAssignmentsByStudent(studentId);
+            request.setAttribute("assignments", assignments);
+            System.out.println("StudentDashboardServlet - Found " + assignments.size() + " assignments for student " + studentId);
+            
+            // Fetch student's submissions
             List<Submission> submissions = submissionDAO.getSubmissionsByStudent(studentId);
             request.setAttribute("submissions", submissions);
             System.out.println("StudentDashboardServlet - Found " + submissions.size() + " submissions for student " + studentId);
         } catch (SQLException e) {
             e.printStackTrace();
-            System.err.println("Error fetching submissions: " + e.getMessage());
+            System.err.println("Error fetching data: " + e.getMessage());
         }
         
         System.out.println("StudentDashboardServlet - Forwarding to student dashboard");

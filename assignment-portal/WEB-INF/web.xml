@@ -54,6 +54,11 @@
         <servlet-name>AdminDashboardServlet</servlet-name>
         <servlet-class>com.assignmentportal.servlet.AdminDashboardServlet</servlet-class>
     </servlet>
+    
+    <servlet>
+        <servlet-name>CreateAssignmentServlet</servlet-name>
+        <servlet-class>com.assignmentportal.servlet.CreateAssignmentServlet</servlet-class>
+    </servlet>
 
     <!-- Servlet Mappings -->
     <servlet-mapping>
@@ -89,6 +94,11 @@
     <servlet-mapping>
         <servlet-name>AdminDashboardServlet</servlet-name>
         <url-pattern>/admin/dashboard</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>CreateAssignmentServlet</servlet-name>
+        <url-pattern>/teacher/create-assignment</url-pattern>
     </servlet-mapping>
 
     <!-- Filters -->
