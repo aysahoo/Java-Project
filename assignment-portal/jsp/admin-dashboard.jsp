@@ -21,7 +21,7 @@
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: #f093fb;
             min-height: 100vh;
             padding: 20px;
         }
@@ -184,14 +184,105 @@
             color: #721c24;
             border-left: 4px solid #dc3545;
         }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .modal-header {
+            margin-bottom: 20px;
+            border-bottom: 2px solid #f5576c;
+            padding-bottom: 15px;
+        }
+        .modal-header h2 {
+            color: #f5576c;
+            margin: 0;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover,
+        .close:focus {
+            color: #000;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #f5576c;
+        }
+        .btn-primary {
+            background: #f5576c;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            background: #e74c3c;
+        }
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>⚙️ Assignment Portal - Admin Dashboard</h1>
+            <h1>Assignment Portal - Admin Dashboard</h1>
             <div class="user-info">
-                <span class="user-name">👤 <%= user.getFullName() %></span>
+                <span class="user-name"><%= user.getFullName() %></span>
                 <a href="<%= request.getContextPath() %>/logout" class="logout-btn">Logout</a>
             </div>
         </div>
@@ -202,45 +293,45 @@
             if (successMsg != null) {
                 session.removeAttribute("success");
         %>
-            <div class="alert alert-success">✓ <%= successMsg %></div>
+            <div class="alert alert-success"><%= successMsg %></div>
         <%
             }
             if (errorMsg != null) {
                 session.removeAttribute("error");
         %>
-            <div class="alert alert-error">✗ <%= errorMsg %></div>
+            <div class="alert alert-error"><%= errorMsg %></div>
         <%
             }
         %>
 
         <div class="dashboard-grid">
             <div class="card">
-                <h2>👥 Total Users</h2>
+                <h2>Total Users</h2>
                 <div class="stat">3</div>
                 <p>Registered users</p>
             </div>
             <div class="card">
-                <h2>👨‍🎓 Students</h2>
+                <h2>Students</h2>
                 <div class="stat">1</div>
                 <p>Active students</p>
             </div>
             <div class="card">
-                <h2>👨‍🏫 Teachers</h2>
+                <h2>Teachers</h2>
                 <div class="stat">1</div>
                 <p>Active teachers</p>
             </div>
             <div class="card">
-                <h2>📚 Courses</h2>
+                <h2>Courses</h2>
                 <div class="stat">2</div>
                 <p>Active courses</p>
             </div>
             <div class="card">
-                <h2>📝 Assignments</h2>
+                <h2>Assignments</h2>
                 <div class="stat">3</div>
                 <p>Total assignments</p>
             </div>
             <div class="card">
-                <h2>📥 Submissions</h2>
+                <h2>Submissions</h2>
                 <div class="stat">0</div>
                 <p>Total submissions</p>
             </div>
@@ -269,7 +360,7 @@
                         <td><span class="badge badge-admin">ADMIN</span></td>
                         <td><span class="badge badge-active">Active</span></td>
                         <td>
-                            <a href="#" class="action-btn">Edit</a>
+                            <button class="action-btn" onclick="editUser(1, 'admin', 'System Administrator', 'admin@assignment-portal.com', 'ADMIN')">Edit</button>
                         </td>
                     </tr>
                     <tr>
@@ -280,8 +371,8 @@
                         <td><span class="badge badge-teacher">TEACHER</span></td>
                         <td><span class="badge badge-active">Active</span></td>
                         <td>
-                            <a href="#" class="action-btn">Edit</a>
-                            <a href="#" class="action-btn delete">Disable</a>
+                            <button class="action-btn" onclick="editUser(2, 'john.smith', 'Dr. John Smith', 'john.smith@university.edu', 'TEACHER')">Edit</button>
+                            <button class="action-btn delete" onclick="disableUser(2, 'john.smith')">Disable</button>
                         </td>
                     </tr>
                     <tr>
@@ -292,14 +383,14 @@
                         <td><span class="badge badge-student">STUDENT</span></td>
                         <td><span class="badge badge-active">Active</span></td>
                         <td>
-                            <a href="#" class="action-btn">Edit</a>
-                            <a href="#" class="action-btn delete">Disable</a>
+                            <button class="action-btn" onclick="editUser(3, 'alice.brown', 'Alice Brown', 'alice.brown@student.edu', 'STUDENT')">Edit</button>
+                            <button class="action-btn delete" onclick="disableUser(3, 'alice.brown')">Disable</button>
                         </td>
                     </tr>
                 </tbody>
             </table>
             <br>
-            <a href="#" class="action-btn create">Create New User</a>
+            <button class="action-btn create" onclick="createNewUser()">Create New User</button>
         </div>
 
         <div class="section">
@@ -325,8 +416,8 @@
                         <td>1</td>
                         <td><span class="badge badge-active">Active</span></td>
                         <td>
-                            <a href="#" class="action-btn">View</a>
-                            <a href="#" class="action-btn">Edit</a>
+                            <button class="action-btn" onclick="viewCourse('CS101')">View</button>
+                            <button class="action-btn" onclick="editCourse('CS101', 'Introduction to Programming', 'Dr. John Smith')">Edit</button>
                         </td>
                     </tr>
                     <tr>
@@ -337,14 +428,14 @@
                         <td>1</td>
                         <td><span class="badge badge-active">Active</span></td>
                         <td>
-                            <a href="#" class="action-btn">View</a>
-                            <a href="#" class="action-btn">Edit</a>
+                            <button class="action-btn" onclick="viewCourse('CS201')">View</button>
+                            <button class="action-btn" onclick="editCourse('CS201', 'Data Structures and Algorithms', 'Dr. John Smith')">Edit</button>
                         </td>
                     </tr>
                 </tbody>
             </table>
             <br>
-            <a href="#" class="action-btn create">Create New Course</a>
+            <button class="action-btn create" onclick="createNewCourse()">Create New Course</button>
         </div>
 
         <div class="section">
@@ -377,5 +468,193 @@
             </table>
         </div>
     </div>
+
+    <!-- User Modal -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" onclick="closeUserModal()">&times;</span>
+                <h2 id="userModalTitle">Create New User</h2>
+            </div>
+            <form id="userForm" onsubmit="saveUser(event)">
+                <input type="hidden" id="userId" name="userId">
+                <div class="form-group">
+                    <label for="username">Username *</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="fullName">Full Name *</label>
+                    <input type="text" id="fullName" name="fullName" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password *</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="role">Role *</label>
+                    <select id="role" name="role" required>
+                        <option value="">Select Role</option>
+                        <option value="STUDENT">Student</option>
+                        <option value="TEACHER">Teacher</option>
+                        <option value="ADMIN">Admin</option>
+                    </select>
+                </div>
+                <div>
+                    <button type="submit" class="btn-primary">Save User</button>
+                    <button type="button" class="btn-secondary" onclick="closeUserModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Course Modal -->
+    <div id="courseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" onclick="closeCourseModal()">&times;</span>
+                <h2 id="courseModalTitle">Create New Course</h2>
+            </div>
+            <form id="courseForm" onsubmit="saveCourse(event)">
+                <input type="hidden" id="courseId" name="courseId">
+                <div class="form-group">
+                    <label for="courseCode">Course Code *</label>
+                    <input type="text" id="courseCode" name="courseCode" required>
+                </div>
+                <div class="form-group">
+                    <label for="courseName">Course Name *</label>
+                    <input type="text" id="courseName" name="courseName" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="teacherId">Teacher *</label>
+                    <select id="teacherId" name="teacherId" required>
+                        <option value="">Select Teacher</option>
+                        <option value="2">Dr. John Smith</option>
+                    </select>
+                </div>
+                <div>
+                    <button type="submit" class="btn-primary">Save Course</button>
+                    <button type="button" class="btn-secondary" onclick="closeCourseModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // User Modal Functions
+        function createNewUser() {
+            document.getElementById('userModalTitle').textContent = 'Create New User';
+            document.getElementById('userForm').reset();
+            document.getElementById('userId').value = '';
+            document.getElementById('userModal').style.display = 'block';
+        }
+
+        function editUser(id, username, fullName, email, role) {
+            document.getElementById('userModalTitle').textContent = 'Edit User';
+            document.getElementById('userId').value = id;
+            document.getElementById('username').value = username;
+            document.getElementById('fullName').value = fullName;
+            document.getElementById('email').value = email;
+            document.getElementById('role').value = role;
+            document.getElementById('password').required = false;
+            document.getElementById('userModal').style.display = 'block';
+        }
+
+        function closeUserModal() {
+            document.getElementById('userModal').style.display = 'none';
+            document.getElementById('password').required = true;
+        }
+
+        function saveUser(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const userId = formData.get('userId');
+            
+            // TODO: Implement actual API call to save user
+            alert('User save functionality will be implemented with backend API.\n\nData to save:\n' +
+                  'Username: ' + formData.get('username') + '\n' +
+                  'Full Name: ' + formData.get('fullName') + '\n' +
+                  'Email: ' + formData.get('email') + '\n' +
+                  'Role: ' + formData.get('role'));
+            
+            closeUserModal();
+            // After successful save, reload page
+            // window.location.reload();
+        }
+
+        function disableUser(userId, username) {
+            if (confirm('Are you sure you want to disable user "' + username + '"?')) {
+                // TODO: Implement actual API call to disable user
+                alert('User disable functionality will be implemented with backend API.\n\nUser ID: ' + userId);
+                
+                // After successful disable, reload page
+                // window.location.reload();
+            }
+        }
+
+        // Course Modal Functions
+        function createNewCourse() {
+            document.getElementById('courseModalTitle').textContent = 'Create New Course';
+            document.getElementById('courseForm').reset();
+            document.getElementById('courseId').value = '';
+            document.getElementById('courseModal').style.display = 'block';
+        }
+
+        function editCourse(code, name, teacher) {
+            document.getElementById('courseModalTitle').textContent = 'Edit Course';
+            document.getElementById('courseId').value = code;
+            document.getElementById('courseCode').value = code;
+            document.getElementById('courseName').value = name;
+            document.getElementById('courseCode').readOnly = true;
+            document.getElementById('courseModal').style.display = 'block';
+        }
+
+        function closeCourseModal() {
+            document.getElementById('courseModal').style.display = 'none';
+            document.getElementById('courseCode').readOnly = false;
+        }
+
+        function saveCourse(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            
+            // TODO: Implement actual API call to save course
+            alert('Course save functionality will be implemented with backend API.\n\nData to save:\n' +
+                  'Course Code: ' + formData.get('courseCode') + '\n' +
+                  'Course Name: ' + formData.get('courseName') + '\n' +
+                  'Description: ' + formData.get('description') + '\n' +
+                  'Teacher ID: ' + formData.get('teacherId'));
+            
+            closeCourseModal();
+            // After successful save, reload page
+            // window.location.reload();
+        }
+
+        function viewCourse(courseCode) {
+            // TODO: Implement course details view
+            alert('Course details view will be implemented.\n\nCourse Code: ' + courseCode);
+            // Could redirect to a course details page
+            // window.location.href = '<%= request.getContextPath() %>/admin/course/' + courseCode;
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const userModal = document.getElementById('userModal');
+            const courseModal = document.getElementById('courseModal');
+            if (event.target == userModal) {
+                closeUserModal();
+            }
+            if (event.target == courseModal) {
+                closeCourseModal();
+            }
+        }
+    </script>
 </body>
 </html>

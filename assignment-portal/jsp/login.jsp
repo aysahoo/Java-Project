@@ -13,7 +13,7 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #667eea;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -72,7 +72,7 @@
         .btn {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #667eea;
             color: white;
             border: none;
             border-radius: 5px;
@@ -136,7 +136,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>🎓 Assignment Portal</h1>
+        <h1>Assignment Portal</h1>
         <p class="subtitle">Welcome! Please login to continue</p>
         
         <% if (request.getAttribute("error") != null) { %>
@@ -168,7 +168,7 @@
         </form>
         
         <div class="info-box">
-            <h3>📝 Demo Accounts</h3>
+            <h3>Demo Accounts</h3>
             <ul>
                 <li><strong>Admin:</strong> admin / admin123</li>
                 <li><strong>Teacher:</strong> john.smith / teacher123</li>

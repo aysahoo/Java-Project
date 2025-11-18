@@ -29,7 +29,7 @@ public class UserDAO {
         
         try {
             conn = connectionPool.getConnection();
-            String sql = "SELECT * FROM users WHERE username = ? AND password = md5(?) AND is_active = TRUE";
+            String sql = "SELECT * FROM users WHERE username = ? AND password = SHA2(?, 256) AND is_active = TRUE";
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, username);
             pstmt.setString(2, password);
@@ -56,7 +56,7 @@ public class UserDAO {
         try {
             conn = connectionPool.getConnection();
             String sql = "INSERT INTO users (username, password, email, full_name, role, is_active) " +
-                        "VALUES (?, md5(?), ?, ?, ?, ?)";
+                        "VALUES (?, SHA2(?, 256), ?, ?, ?, ?)";
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, user.getUsername());
             pstmt.setString(2, user.getPassword());

@@ -34,7 +34,7 @@
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            background: #11998e;
             min-height: 100vh;
             padding: 20px;
         }
@@ -193,9 +193,9 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>👨‍🏫 Assignment Portal - Teacher Dashboard</h1>
+            <h1>Assignment Portal - Teacher Dashboard</h1>
             <div class="user-info">
-                <span class="user-name">👤 <%= user.getFullName() %></span>
+                <span class="user-name"><%= user.getFullName() %></span>
                 <a href="<%= request.getContextPath() %>/logout" class="logout-btn">Logout</a>
             </div>
         </div>
@@ -219,17 +219,17 @@
 
         <div class="dashboard-grid">
             <div class="card">
-                <h2>📚 My Courses</h2>
+                <h2>My Courses</h2>
                 <div class="stat">2</div>
                 <p>Active courses</p>
             </div>
             <div class="card">
-                <h2>📝 Assignments</h2>
+                <h2>Assignments</h2>
                 <div class="stat">3</div>
                 <p>Total assignments</p>
             </div>
             <div class="card">
-                <h2>👥 Students</h2>
+                <h2>Students</h2>
                 <div class="stat">1</div>
                 <p>Enrolled students</p>
             </div>
@@ -256,11 +256,11 @@
                             <span class="badge badge-pending">Pending</span>
                         <% } %>
                     </div>
-                    <div class="item-meta">👨‍🎓 Student: <%= sub.getStudentName() != null ? sub.getStudentName() : "Student #" + sub.getStudentId() %></div>
-                    <div class="item-meta">📅 Submitted: <%= sub.getSubmissionDate() %></div>
-                    <div class="item-meta">📎 File: <%= sub.getOriginalFilename() %> (<%= sub.getFileSizeKb() %> KB)</div>
+                    <div class="item-meta">Student: <%= sub.getStudentName() != null ? sub.getStudentName() : "Student #" + sub.getStudentId() %></div>
+                    <div class="item-meta">Submitted: <%= sub.getSubmissionDate() %></div>
+                    <div class="item-meta">File: <%= sub.getOriginalFilename() %> (<%= sub.getFileSizeKb() %> KB)</div>
                     <% if ("GRADED".equals(sub.getStatus())) { %>
-                        <div class="item-meta">📊 Marks: <%= sub.getMarksObtained() %> / <%= sub.getMaxMarks() %></div>
+                        <div class="item-meta">Marks: <%= sub.getMarksObtained() %> / <%= sub.getMaxMarks() %></div>
                     <% } %>
                     <% if (!"GRADED".equals(sub.getStatus())) { %>
                         <button onclick="openGradeModal(<%= sub.getSubmissionId() %>, '<%= sub.getAssignmentTitle() %>', '<%= sub.getStudentName() %>', <%= sub.getMaxMarks() %>)" class="action-btn">Grade Now</button>
@@ -286,8 +286,8 @@
                         CS101 - Introduction to Programming
                         <span class="badge badge-active">Active</span>
                     </div>
-                    <div class="item-meta">📝 2 assignments created</div>
-                    <div class="item-meta">👥 1 student enrolled</div>
+                    <div class="item-meta">2 assignments created</div>
+                    <div class="item-meta">1 student enrolled</div>
                     <a href="#" class="action-btn">View Course</a>
                     <a href="#" class="action-btn create">Create Assignment</a>
                 </li>
@@ -296,8 +296,8 @@
                         CS201 - Data Structures and Algorithms
                         <span class="badge badge-active">Active</span>
                     </div>
-                    <div class="item-meta">📝 1 assignment created</div>
-                    <div class="item-meta">👥 1 student enrolled</div>
+                    <div class="item-meta">1 assignment created</div>
+                    <div class="item-meta">1 student enrolled</div>
                     <a href="#" class="action-btn">View Course</a>
                     <a href="#" class="action-btn create">Create Assignment</a>
                 </li>
@@ -305,7 +305,7 @@
         </div>
 
         <div class="section">
-            <h2>📝 Recent Assignments</h2>
+            <h2>Recent Assignments</h2>
             <ul class="assignment-list">
                 <li class="list-item">
                     <div class="item-title">Assignment 1: Hello World</div>
@@ -337,8 +337,8 @@
         <!-- Grade Submission Modal -->
         <div id="gradeModal" class="modal" style="display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
             <div style="background:white; margin:5% auto; border-radius:10px; width:90%; max-width:600px; box-shadow:0 4px 20px rgba(0,0,0,0.3);">
-                <div style="padding:20px 30px; background:linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color:white; border-radius:10px 10px 0 0; display:flex; justify-content:space-between; align-items:center;">
-                    <h2 style="margin:0; color:white;">📝 Grade Submission</h2>
+                <div style="padding:20px 30px; background:#11998e; color:white; border-radius:10px 10px 0 0; display:flex; justify-content:space-between; align-items:center;">
+                    <h2 style="margin:0; color:white;">Grade Submission</h2>
                     <span onclick="closeGradeModal()" style="color:white; font-size:32px; font-weight:bold; cursor:pointer; line-height:20px;">&times;</span>
                 </div>
                 <div style="padding:30px;">

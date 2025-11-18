@@ -43,7 +43,7 @@
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #667eea;
             min-height: 100vh;
             padding: 20px;
         }
@@ -202,7 +202,7 @@
         }
         .modal-header {
             padding: 20px 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #667eea;
             color: white;
             border-radius: 10px 10px 0 0;
             display: flex;
@@ -311,9 +311,9 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎓 Assignment Portal - Student Dashboard</h1>
+            <h1>Assignment Portal - Student Dashboard</h1>
             <div class="user-info">
-                <span class="user-name">👤 <%= user.getFullName() %></span>
+                <span class="user-name"><%= user.getFullName() %></span>
                 <a href="<%= request.getContextPath() %>/logout" class="logout-btn">Logout</a>
             </div>
         </div>
@@ -337,29 +337,29 @@
 
         <div class="dashboard-grid">
             <div class="card">
-                <h2>📚 Enrolled Courses</h2>
+                <h2>Enrolled Courses</h2>
                 <div class="stat">2</div>
                 <p>Active courses</p>
             </div>
             <div class="card">
-                <h2>📝 Assignments</h2>
+                <h2>Assignments</h2>
                 <div class="stat">3</div>
                 <p>Total assignments</p>
             </div>
             <div class="card">
-                <h2>✅ Submissions</h2>
+                <h2>Submissions</h2>
                 <div class="stat"><%= submittedCount %></div>
                 <p>Submitted assignments</p>
             </div>
             <div class="card">
-                <h2>📊 Average Grade</h2>
+                <h2>Average Grade</h2>
                 <div class="stat"><%= gradedCount > 0 ? String.format("%.1f", avgGrade) : "--" %></div>
                 <p><%= gradedCount > 0 ? gradedCount + " graded" : "Not graded yet" %></p>
             </div>
         </div>
 
         <div class="section">
-            <h2>📋 My Courses</h2>
+            <h2>My Courses</h2>
             <ul class="assignment-list">
                 <li class="assignment-item">
                     <div class="assignment-title">CS101 - Introduction to Programming</div>
@@ -393,12 +393,12 @@
                     <% if (sub.getCourseName() != null) { %>
                         <div class="assignment-meta">Course: <%= sub.getCourseName() %></div>
                     <% } %>
-                    <div class="assignment-meta">📅 Submitted: <%= sub.getSubmissionDate() %></div>
-                    <div class="assignment-meta">📎 File: <%= sub.getOriginalFilename() %> (<%= sub.getFileSizeKb() %> KB)</div>
+                    <div class="assignment-meta">Submitted: <%= sub.getSubmissionDate() %></div>
+                    <div class="assignment-meta">File: <%= sub.getOriginalFilename() %> (<%= sub.getFileSizeKb() %> KB)</div>
                     
                     <% if ("GRADED".equals(sub.getStatus())) { %>
                         <div class="assignment-meta" style="margin-top:10px; padding:10px; background:#e8f5e9; border-left:4px solid #4caf50; border-radius:5px;">
-                            <strong style="color:#2e7d32;">📊 Grade: <%= sub.getMarksObtained() %> / <%= sub.getMaxMarks() %></strong>
+                            <strong style="color:#2e7d32;">Grade: <%= sub.getMarksObtained() %> / <%= sub.getMaxMarks() %></strong>
                             <% 
                                 double percentage = (sub.getMarksObtained() * 100.0) / sub.getMaxMarks();
                                 String grade = percentage >= 90 ? "A+" : percentage >= 80 ? "A" : percentage >= 70 ? "B" : percentage >= 60 ? "C" : percentage >= 50 ? "D" : "F";
@@ -406,7 +406,7 @@
                             <span style="margin-left:10px; color:#2e7d32;">(<%=String.format("%.1f", percentage)%>% - Grade: <%= grade %>)</span>
                             <% if (sub.getFeedback() != null && !sub.getFeedback().isEmpty()) { %>
                                 <div style="margin-top:8px; color:#555;">
-                                    <strong>💬 Feedback:</strong> <%= sub.getFeedback() %>
+                                    <strong>Feedback:</strong> <%= sub.getFeedback() %>
                                 </div>
                             <% } %>
                             <% if (sub.getGradedAt() != null) { %>
@@ -428,7 +428,7 @@
         <% } %>
         
         <div class="section">
-            <h2>📝 Pending Assignments</h2>
+            <h2>Pending Assignments</h2>
             <ul class="assignment-list">
                 <li class="assignment-item">
                     <div class="assignment-title">
@@ -436,8 +436,8 @@
                         <span class="badge badge-pending">Pending</span>
                     </div>
                     <div class="assignment-meta">Course: CS101 - Introduction to Programming</div>
-                    <div class="assignment-meta">📅 Due: November 30, 2025 at 11:59 PM</div>
-                    <div class="assignment-meta">📊 Max Marks: 100</div>
+                    <div class="assignment-meta">Due: November 30, 2025 at 11:59 PM</div>
+                    <div class="assignment-meta">Max Marks: 100</div>
                     <button onclick="openSubmitModal(1, 'Assignment 1: Hello World')" class="submit-btn">Submit Assignment</button>
                 </li>
                 <li class="assignment-item">
@@ -446,8 +446,8 @@
                         <span class="badge badge-pending">Pending</span>
                     </div>
                     <div class="assignment-meta">Course: CS101 - Introduction to Programming</div>
-                    <div class="assignment-meta">📅 Due: December 15, 2025 at 11:59 PM</div>
-                    <div class="assignment-meta">📊 Max Marks: 100</div>
+                    <div class="assignment-meta">Due: December 15, 2025 at 11:59 PM</div>
+                    <div class="assignment-meta">Max Marks: 100</div>
                     <button onclick="openSubmitModal(2, 'Assignment 2: Calculator')" class="submit-btn">Submit Assignment</button>
                 </li>
                 <li class="assignment-item">
@@ -456,8 +456,8 @@
                         <span class="badge badge-pending">Pending</span>
                     </div>
                     <div class="assignment-meta">Course: CS201 - Data Structures and Algorithms</div>
-                    <div class="assignment-meta">📅 Due: December 1, 2025 at 11:59 PM</div>
-                    <div class="assignment-meta">📊 Max Marks: 100</div>
+                    <div class="assignment-meta">Due: December 1, 2025 at 11:59 PM</div>
+                    <div class="assignment-meta">Max Marks: 100</div>
                     <button onclick="openSubmitModal(3, 'Assignment 1: Linked Lists')" class="submit-btn">Submit Assignment</button>
                 </li>
             </ul>
